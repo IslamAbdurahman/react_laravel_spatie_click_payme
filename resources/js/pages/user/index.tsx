@@ -25,7 +25,7 @@ export default function User() {
     // Form handling for search and per_page
     const { data, setData } = useForm<SearchData>({
         search: '',
-        role_id: 0,
+        role: '',
         per_page: user.per_page,
         page: user.current_page,
         total: user.total
@@ -41,8 +41,8 @@ export default function User() {
         const urlParams = new URLSearchParams(location.search);
         const searchQuery = urlParams.get('search') || ''; // Get 'search' query from the URL
         setData('search', searchQuery); // Set it to the form state
-        const roleQuery = Number(urlParams.get('role_id')) || 0; // Get 'search' query from the URL
-        setData('role_id', roleQuery); // Set it to the form state
+        const roleQuery = urlParams.get('role') || ''; // Get 'search' query from the URL
+        setData('role', roleQuery); // Set it to the form state
     }, [location.search]);
 
     return (

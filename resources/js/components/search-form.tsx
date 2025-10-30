@@ -29,8 +29,8 @@ const SearchForm = ({ handleSubmit, setData, data, roles }: SearchFormProps) => 
     };
 
     const handleRoleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        const role_id = parseInt(e.target.value, 10);  // parse as number
-        setData('role_id', role_id);  // parse as number
+        const role = e.target.value;
+        setData('role', role);
     };
 
     return (
@@ -124,14 +124,14 @@ const SearchForm = ({ handleSubmit, setData, data, roles }: SearchFormProps) => 
 
                 {roles &&
                     <select
-                        value={data.role_id || ''}
+                        value={data.role || ''}
                         onChange={handleRoleChange}
                         className="px-4 py-2 text-sm font-medium text-gray-900 bg-white  border rounded  border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
                     >
-                        { data.role_id }
+                        {data.role}
                         <option value="0">{t('role')}</option>
                         {roles.map((role) => (
-                            <option key={role.id} value={role.id}>
+                            <option key={role.id} value={role.name}>
                                 {role.name}
                             </option>
                         ))}
