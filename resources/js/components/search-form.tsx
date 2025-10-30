@@ -26,11 +26,22 @@ const SearchForm = ({ handleSubmit, setData, data, roles }: SearchFormProps) => 
 
     const handlePerPageChange = (e: ChangeEvent<HTMLSelectElement>) => {
         setData('per_page', parseInt(e.target.value, 10));  // parse as number
+
+        const form = e.target.closest('form');
+        if (form) {
+            // React state yangilanishidan keyin submit
+            queueMicrotask(() => form.requestSubmit());
+        }
     };
 
     const handleRoleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        const role = e.target.value;
-        setData('role', role);
+        setData('role', e.target.value);
+
+        const form = e.target.closest('form');
+        if (form) {
+            // React state yangilanishidan keyin submit
+            queueMicrotask(() => form.requestSubmit());
+        }
     };
 
     return (
