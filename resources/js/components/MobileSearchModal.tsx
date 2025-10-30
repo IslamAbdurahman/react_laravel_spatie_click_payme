@@ -1,7 +1,7 @@
 // components/MobileSearchModal.tsx
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
-import { SearchData, Worker, Branch, Firm } from '@/types';
+import { SearchData, Role } from '@/types';
 import SearchForm from '@/components/search-form';
 import { useTranslation } from 'react-i18next';
 
@@ -9,12 +9,10 @@ interface Props {
     data: SearchData;
     setData: <K extends keyof SearchData>(key: K, value: SearchData[K]) => void;
     handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-    workers?: Worker[];
-    firms?: Firm[];
-    branches?: Branch[];
+    roles?: Role[];
 }
 
-const MobileSearchModal = ({ data, setData, handleSubmit, workers, firms, branches }: Props) => {
+const MobileSearchModal = ({ data, setData, handleSubmit, roles }: Props) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const { t } = useTranslation(); // Hook to access translations
@@ -32,7 +30,8 @@ const MobileSearchModal = ({ data, setData, handleSubmit, workers, firms, branch
             {/* Modal Overlay */}
             {isOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 lg:hidden">
-                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-11/12 max-h-[90vh] overflow-y-auto p-4 relative">
+                    <div
+                        className="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-11/12 max-h-[90vh] overflow-y-auto p-4 relative">
 
                         {/* Close Button */}
                         <button
@@ -52,9 +51,7 @@ const MobileSearchModal = ({ data, setData, handleSubmit, workers, firms, branch
                             }}
                             data={data}
                             setData={setData}
-                            workers={workers}
-                            firms={firms}
-                            branches={branches}
+                            roles={roles}
                         />
                     </div>
                 </div>

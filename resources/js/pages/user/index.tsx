@@ -52,6 +52,7 @@ export default function User() {
                 {/* Search and Per-Page Selection */}
                 <div className="flex justify-end items-center">
                     <MobileSearchModal
+                        roles={roles}
                         data={data}
                         setData={setData}
                         handleSubmit={handleSubmit}
