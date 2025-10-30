@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-import { PencilIcon, TrashIcon } from 'lucide-react';
+import React, {} from 'react';
 import UpdateUserModal from '@/components/user/update-user-modal';
 import DeleteItemModal from '@/components/delete-item-modal';
 import { Link, useForm } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
-import { User, type UserPaginate, SearchData } from '@/types';
+import { type UserPaginate, SearchData } from '@/types';
 import { toast } from 'sonner';
 
 interface UserTableProps extends UserPaginate {
@@ -14,19 +13,6 @@ interface UserTableProps extends UserPaginate {
 const UserTable = ({ searchData, ...user }: UserTableProps) => {
 
     const { t } = useTranslation();  // Using the translation hook
-    const [open, setOpen] = useState(false);
-    const [openDelete, setOpenDelete] = useState(false);
-    const [selectedUser, setSelectedUser] = useState<User | null>(null);
-
-    const handleUpdateClick = (userData: User) => {
-        setSelectedUser(userData); // Set the selected user data
-        setOpen(true); // Open the modal
-    };
-
-    const handleDeleteClick = (userData: User) => {
-        setSelectedUser(userData); // Set the selected user for deletion
-        setOpenDelete(true); // Open the delete modal
-    };
 
     const { delete: deleteUser, reset, errors: deleteError, clearErrors } = useForm();
 
@@ -38,7 +24,6 @@ const UserTable = ({ searchData, ...user }: UserTableProps) => {
             onSuccess: () => {
                 reset();
                 clearErrors();
-                setOpen(false); // 🔒 CLOSE MODAL HERE
                 toast.success(t('deleted_successfully')); // Success message
             },
             onError: (err) => {
@@ -90,19 +75,14 @@ const UserTable = ({ searchData, ...user }: UserTableProps) => {
 
                                     <div className="inline-flex shadow-sm">
 
-                                        <button
-                                            onClick={() => handleUpdateClick(item)}
-                                            className="bg-green-600 px-4 py-2 text-sm font-medium text-white-700 border border-gray-400 hover:text-black hover:bg-gray-100 focus:z-10 rounded-l-md"
-                                        >
-                                            <PencilIcon className="w-4 h-4" />
-                                        </button>
+                                        <UpdateUserModal
+                                            user={item}
+                                        />
 
-                                        <button
-                                            onClick={() => handleDeleteClick(item)}
-                                            className="bg-red-500 px-4 py-2 text-sm font-medium text-white-700 border-t border-b border-gray-400 hover:text-black hover:bg-gray-100 focus:z-10 rounded-r-md"
-                                        >
-                                            <TrashIcon className="w-4 h-4" />
-                                        </button>
+                                        <DeleteItemModal
+                                            item={item}
+                                            onDelete={handleDelete} // Handle deletion
+                                        />
                                     </div>
 
 
@@ -111,25 +91,6 @@ const UserTable = ({ searchData, ...user }: UserTableProps) => {
                         );
                     })}
                     </tbody>
-
-                    {/* Place the UpdateUserModal here */}
-                    {selectedUser && open && (
-                        <UpdateUserModal
-                            user={selectedUser}
-                            open={open}
-                            setOpen={setOpen}
-                        />
-                    )}
-
-                    {/* Pass selected user to the DeleteUserModal */}
-                    {selectedUser && openDelete && (
-                        <DeleteItemModal
-                            item={selectedUser}
-                            open={openDelete}  // Assuming you have a separate state for openDelete
-                            setOpen={setOpenDelete}  // Or you can manage this in its own state
-                            onDelete={handleDelete} // Handle deletion
-                        />
-                    )}
 
                 </table>
 

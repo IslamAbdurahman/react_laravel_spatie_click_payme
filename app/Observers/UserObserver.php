@@ -38,8 +38,6 @@ class UserObserver
             throw new \Exception('You are not allowed to access this page');
         }
 
-        $user->user_firms()->delete();
-
     }
 
     /**

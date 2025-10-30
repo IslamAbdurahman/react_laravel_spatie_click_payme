@@ -42,6 +42,10 @@ class UserController extends Controller
             });
         }
 
+        if ($request->role) {
+            $user->role($request->role);
+        }
+
         $user = $user->paginate($per_page);
 
         $roles = \Spatie\Permission\Models\Role::all();
