@@ -31,8 +31,8 @@ class UserController extends Controller
         $user = User::with([
             'roles',
         ])
-        ->whereNotIn('id', [Auth::user()->id])
-        ->orderBy('id', 'desc');
+            ->whereNotIn('id', [Auth::user()->id])
+            ->orderBy('id', 'desc');
 
         if ($request->search) {
             $user->where(function ($query) use ($request) {
@@ -44,8 +44,11 @@ class UserController extends Controller
 
         $user = $user->paginate($per_page);
 
+        $roles = \Spatie\Permission\Models\Role::all();
+
         return Inertia::render('user/index', [
-            'user' => $user
+            'user' => $user,
+            'roles' => $roles,
         ]);
     }
 

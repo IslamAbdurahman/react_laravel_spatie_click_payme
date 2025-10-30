@@ -1,64 +1,37 @@
-import React, { useEffect } from 'react';
-import { Branch, Firm, SearchData, Worker } from '@/types';
+import { ChangeEvent, FormEvent } from 'react';
+import { Role, SearchData } from '@/types';
 import { Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 import DatePicker from 'react-datepicker';
 
 interface SearchFormProps {
-    handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+    handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
     setData: <K extends keyof SearchData>(key: K, value: SearchData[K]) => void;
     data: SearchData;
-    workers?: Worker[];
-    firms?: Firm[];
-    branches?: Branch[];
+    roles?: Role[];
 }
 
-const SearchForm = ({ handleSubmit, setData, data, workers, firms, branches }: SearchFormProps) => {
+const SearchForm = ({ handleSubmit, setData, data, roles }: SearchFormProps) => {
 
     const { t } = useTranslation(); // Hook to access translations
 
-    const [filteredBranches, setBranches] = React.useState<Branch[] | undefined>(branches);
-
-    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
         setData('search', e.target.value);
     };
 
-    const handleMonth = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleMonth = (e: ChangeEvent<HTMLInputElement>) => {
         setData('month', e.target.value);
     };
 
-    const handlePerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const handlePerPageChange = (e: ChangeEvent<HTMLSelectElement>) => {
         setData('per_page', parseInt(e.target.value, 10));  // parse as number
     };
 
-    const handleWorkerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setData('worker_id', parseInt(e.target.value, 10));  // parse as number
+    const handleRoleChange = (e: ChangeEvent<HTMLSelectElement>) => {
+        const role_id = parseInt(e.target.value, 10);  // parse as number
+        setData('role_id', role_id);  // parse as number
     };
-
-    const handleFirmChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const firm_id = parseInt(e.target.value, 10);  // parse as number
-        setData('firm_id', firm_id);  // parse as number
-
-        if (firm_id) {
-            setBranches(branches?.filter(branch => branch.firm_id === firm_id));
-        } else {
-            setBranches(branches);
-        }
-    };
-
-    const handleBranchChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setData('branch_id', parseInt(e.target.value, 10));  // parse as number
-    };
-
-    useEffect(() => {
-        if (data.firm_id) {
-            setBranches(branches?.filter(branch => branch.firm_id === data.firm_id));
-        } else {
-            setBranches(branches);
-        }
-    }, [data, setBranches, branches]);
-
 
     return (
         <form onSubmit={handleSubmit}>
@@ -125,7 +98,6 @@ const SearchForm = ({ handleSubmit, setData, data, workers, firms, branches }: S
                 </div>
 
 
-
                 {typeof data.month === 'string' &&
                     <input
                         type="month"
@@ -150,51 +122,21 @@ const SearchForm = ({ handleSubmit, setData, data, workers, firms, branches }: S
                 }
 
 
-                {firms &&
+                {roles &&
                     <select
-                        value={data.firm_id || ''}
-                        onChange={handleFirmChange}
+                        value={data.role_id || ''}
+                        onChange={handleRoleChange}
                         className="px-4 py-2 text-sm font-medium text-gray-900 bg-white  border rounded  border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
                     >
-                        <option value="0">{t('firm')}</option>
-                        {firms.map((firm) => (
-                            <option key={firm.id} value={firm.id}>
-                                {firm.name}
+                        { data.role_id }
+                        <option value="0">{t('role')}</option>
+                        {roles.map((role) => (
+                            <option key={role.id} value={role.id}>
+                                {role.name}
                             </option>
                         ))}
                     </select>
                 }
-
-                {filteredBranches &&
-                    <select
-                        value={data.branch_id || ''}
-                        onChange={handleBranchChange}
-                        className="px-4 py-2 text-sm font-medium text-gray-900 bg-white  border rounded  border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
-                    >
-                        <option value="0">{t('branch')}</option>
-                        {filteredBranches.map((branch) => (
-                            <option key={branch.id} value={branch.id}>
-                                {branch.name}
-                            </option>
-                        ))}
-                    </select>
-                }
-
-                {workers &&
-                    <select
-                        value={data.worker_id || ''}
-                        onChange={handleWorkerChange}
-                        className="px-4 py-2 text-sm font-medium text-gray-900 bg-white  border rounded  border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
-                    >
-                        <option value="">{t('worker')}</option>
-                        {workers.map((worker) => (
-                            <option key={worker.id} value={worker.id}>
-                                {worker.name}
-                            </option>
-                        ))}
-                    </select>
-                }
-
 
                 {/* Submit button to apply filter */}
                 <button

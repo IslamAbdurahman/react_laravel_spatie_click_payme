@@ -50,6 +50,7 @@ export interface SearchData {
     month?: string;
     date?: string;
     daysInMonth?: number;
+    role_id?: number;
 
     [key: string]: string | number; // Allow dynamic keys
 }

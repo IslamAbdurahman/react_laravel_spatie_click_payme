@@ -1,7 +1,7 @@
 import AppLayout from '@/layouts/app-layout';
 import { Head, usePage, useForm } from '@inertiajs/react';
-import { type BreadcrumbItem, type UserPaginate, SearchData } from '@/types';
-import { useEffect } from 'react';
+import { type BreadcrumbItem, type UserPaginate, SearchData, Role } from '@/types';
+import React, { useEffect } from 'react';
 import { router } from '@inertiajs/react';
 import UserTable from '@/components/user/user-table';
 import SearchForm from '@/components/search-form';
@@ -9,7 +9,10 @@ import { useTranslation } from 'react-i18next';
 import MobileSearchModal from '@/components/MobileSearchModal';
 
 export default function User() {
-    const { user } = usePage<{ user: UserPaginate }>().props;
+    const { user, roles } = usePage<{
+        user: UserPaginate,
+        roles: Role[]
+    }>().props;
     const { t } = useTranslation();  // Using the translation hook
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -22,6 +25,7 @@ export default function User() {
     // Form handling for search and per_page
     const { data, setData } = useForm<SearchData>({
         search: '',
+        role_id: 0,
         per_page: user.per_page,
         page: user.current_page,
         total: user.total
@@ -37,6 +41,8 @@ export default function User() {
         const urlParams = new URLSearchParams(location.search);
         const searchQuery = urlParams.get('search') || ''; // Get 'search' query from the URL
         setData('search', searchQuery); // Set it to the form state
+        const roleQuery = Number(urlParams.get('role_id')) || 0; // Get 'search' query from the URL
+        setData('role_id', roleQuery); // Set it to the form state
     }, [location.search]);
 
     return (
@@ -51,7 +57,10 @@ export default function User() {
                         handleSubmit={handleSubmit}
                     />
                     <div className={'hidden lg:block'}>
-                        <SearchForm handleSubmit={handleSubmit} setData={setData} data={data} />
+                        <SearchForm handleSubmit={handleSubmit}
+                                    roles={roles}
+                                    setData={setData}
+                                    data={data} />
                     </div>
                 </div>
 
