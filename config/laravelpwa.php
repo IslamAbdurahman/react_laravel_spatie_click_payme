@@ -1,10 +1,10 @@
 <?php
 
 return [
-    'name' => 'PayDay',
+    'name' => 'Demo',
     'manifest' => [
-        'name' => env('APP_NAME', 'PayDay'),
-        'short_name' => 'PayDay',
+        'name' => env('APP_NAME', 'Demo'),
+        'short_name' => 'Demo',
         'start_url' => '/',
         'background_color' => '#ffffff',
         'theme_color' => '#000000',

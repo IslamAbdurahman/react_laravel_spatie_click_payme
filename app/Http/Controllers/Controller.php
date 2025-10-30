@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 
 /**
  * @OA\Info(
- *   title="PayDay API",
+ *   title="Demo API",
  *   version="1.0.0",
  *   description="Description of your API"
  * ),
