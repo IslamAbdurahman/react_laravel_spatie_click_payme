@@ -26,6 +26,7 @@ const SearchForm = ({ handleSubmit, setData, data, roles }: SearchFormProps) => 
 
     const handlePerPageChange = (e: ChangeEvent<HTMLSelectElement>) => {
         setData('per_page', parseInt(e.target.value, 10));  // parse as number
+        setData('page', 1);  // parse as number
 
         const form = e.target.closest('form');
         if (form) {
