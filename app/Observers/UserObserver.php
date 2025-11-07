@@ -34,10 +34,13 @@ class UserObserver
      */
     public function deleting(User $user): void
     {
-        if (!Auth::user()->hasRole('Admin')) {
-            throw new \Exception('You are not allowed to access this page');
-        }
+        $authUser = Auth::user();
 
+        if ($authUser && $authUser->id != $user->id) {
+            if (!$authUser->hasRole('Admin')) {
+                throw new \Exception('You are not allowed to access this page');
+            }
+        }
     }
 
     /**
