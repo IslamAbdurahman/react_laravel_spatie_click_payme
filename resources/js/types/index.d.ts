@@ -17,11 +17,6 @@ export interface BreadcrumbItem {
     href: string;
 }
 
-export interface NavGroup {
-    title: string;
-    items: NavItem[];
-}
-
 export interface NavItem {
     title: string;
     href: string;
@@ -85,7 +80,6 @@ export interface User {
     balance: number;
     avatar: string;
     email_verified_at: string | null;
-    user_topups?: UserTopUp[];
     roles?: Role[];
 
     [key: string]: unknown;
