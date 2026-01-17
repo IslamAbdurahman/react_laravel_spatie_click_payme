@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
-class UpdateUserRequest extends FormRequest
+use Illuminate\Support\Facades\Auth;
+
+class StoreUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,6 +15,13 @@ class UpdateUserRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'user_id' => Auth::id()
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -21,25 +29,16 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        $userId = $this->route('user'); // adjust depending on your route parameter name
-
         return [
+            'user_id'  => 'nullable|integer|exists:users,id',
             'name'     => 'required|string|max:255',
-            'phone'    => [
-                'nullable',
-                'string',
-                'max:20',
-                Rule::unique('users', 'phone')->ignore($userId),
-            ],
+            'phone'    => 'nullable|string|max:20|unique:users,phone',
             'role'     => 'nullable|string',
-            'email'    => [
-                'nullable',
-                'email',
-                Rule::unique('users', 'email')->ignore($userId),
-            ],
+            'email'    => 'nullable|email|unique:users,email',
             'password' => 'nullable|string|min:6',
         ];
     }
+
 
     public function messages(): array
     {

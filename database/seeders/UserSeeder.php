@@ -16,6 +16,7 @@ class UserSeeder extends Seeder
         $users = [
             [
                 'name' => 'Admin',
+                'username' => 'admin',
                 'email' => 'admin@gmail.com',
                 'phone' => '998901234567',
                 'password' => Hash::make('123456'), // Always hash passwords
@@ -23,10 +24,11 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($users as $user) {
-            $new_user = User::updateOrCreate(
-                ['email' => $user['email']], // unique condition
-                $user
-            );
+            $new_user = User::query()
+                ->updateOrCreate(
+                    ['email' => $user['email']], // unique condition
+                    $user
+                );
 
             $new_user->assignRole('Admin');
         }

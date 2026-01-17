@@ -7,14 +7,14 @@ use App\Models\User\User;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 
-class GoogleAuthController extends Controller
+class GithubAuthController extends Controller
 {
     /**
      * Redirect to Google for authentication.
      */
     public function redirect()
     {
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver('github')->redirect();
     }
 
     /**
@@ -23,19 +23,18 @@ class GoogleAuthController extends Controller
     public function callback()
     {
         try {
-            $googleUser = Socialite::driver('google')->user();
+            $githubUser = Socialite::driver('github')->user();
 
             // Find or create the user
-            $user = User::query()
-                ->updateOrCreate(
-                    ['email' => $googleUser->getEmail()],
-                    [
-                        'name' => $googleUser->getName(),
-                        'google_id' => $googleUser->getId(),
-                        'avatar' => $googleUser->getAvatar(),
-                        'username' => explode('@', $googleUser->getEmail())[0],
-                    ]
-                );
+            $user = User::updateOrCreate(
+                ['email' => $githubUser->getEmail()],
+                [
+                    'name' => $githubUser->getName() ?? $githubUser->getNickname(),
+                    'github_id' => $githubUser->getId(),
+                    'avatar' => $githubUser->getAvatar(),
+                    'username' => $githubUser->getNickname(),
+                ]
+            );
 
             // Assign default role only if the user was just created
             if ($user->wasRecentlyCreated) {

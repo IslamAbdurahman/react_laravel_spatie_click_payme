@@ -1,48 +1,68 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @class(['dark' => ($appearance ?? 'system') == 'dark'])>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        @laravelPWA
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-        {{-- Inline script to detect system dark mode preference and apply it immediately --}}
-        <script>
-            (function() {
-                const appearance = '{{ $appearance ?? "system" }}';
+    <script>
+        if (window.Telegram && window.Telegram.WebApp) {
+            const WebApp = window.Telegram.WebApp;
+            WebApp.ready();
 
-                if (appearance === 'system') {
-                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            // Always expand (safe for both mobile & desktop)
+            WebApp.expand();
 
-                    if (prefersDark) {
-                        document.documentElement.classList.add('dark');
-                    }
+            // Fullscreen only on laptop/desktop
+            if (WebApp.platform === "web" || WebApp.platform === "tdesktop") {
+                WebApp.requestFullscreen();
+            }
+        }
+    </script>
+
+    {{-- 🔑 Laravel CSRF token --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    @laravelPWA
+
+    {{-- Inline script to detect system dark mode preference and apply it immediately --}}
+    <script>
+        (function() {
+            const appearance = '{{ $appearance ?? "system" }}';
+
+            if (appearance === 'system') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+                if (prefersDark) {
+                    document.documentElement.classList.add('dark');
                 }
-            })();
-        </script>
-
-        {{-- Inline style to set the HTML background color based on our theme in app.css --}}
-        <style>
-            html {
-                background-color: oklch(1 0 0);
             }
+        })();
+    </script>
 
-            html.dark {
-                background-color: oklch(0.145 0 0);
-            }
-        </style>
+    {{-- Inline style to set the HTML background color based on our theme in app.css --}}
+    <style>
+        html {
+            background-color: oklch(1 0 0);
+        }
 
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+        html.dark {
+            background-color: oklch(0.145 0 0);
+        }
+    </style>
 
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+    <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
-        @routes
-        @viteReactRefresh
-        @vite(['resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])
-        @inertiaHead
-    </head>
-    <body class="font-sans antialiased overflow-x-hidden">
-        @inertia
-    </body>
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+
+    @routes
+    @viteReactRefresh
+    @vite(['resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])
+    @inertiaHead
+</head>
+<body class="font-sans antialiased overflow-x-hidden">
+@inertia
+</body>
 </html>

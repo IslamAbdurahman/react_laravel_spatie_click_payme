@@ -29,8 +29,18 @@ class LoginRequest extends FormRequest
         $this->ensureIsNotRateLimited();
 
         $loginInput = $this->input('email_or_phone');
+
+        // Detect login field
+        if (filter_var($loginInput, FILTER_VALIDATE_EMAIL)) {
+            $field = 'email';
+        } elseif (preg_match('/^\+?[0-9]{7,15}$/', $loginInput)) {
+            $field = 'phone';
+        } else {
+            $field = 'username';
+        }
+
         $credentials = [
-            filter_var($loginInput, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone' => $loginInput,
+            $field => $loginInput,
             'password' => $this->input('password'),
         ];
 
@@ -44,6 +54,7 @@ class LoginRequest extends FormRequest
 
         RateLimiter::clear($this->throttleKey());
     }
+
 
     public function ensureIsNotRateLimited(): void
     {

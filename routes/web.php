@@ -4,9 +4,14 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Auth\GoogleAuthController;
 
+
+Route::post('/webapp-login', [\App\Http\Controllers\Auth\TelegramAuthController::class, 'login']);
+
+Route::any('/bot/TelegramBot/webhook', [\App\Http\Controllers\Telegram\TelegramBotController::class, 'handle']);
+
 Route::get('/', function () {
     return redirect()->route('login');
-    return Inertia::render('welcome');
+//    return Inertia::render('welcome');
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -26,6 +31,13 @@ require __DIR__ . '/auth.php';
 
 Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->name('google.redirect');
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('google.callback');
+
+Route::get('/auth/github', [\App\Http\Controllers\Auth\GithubAuthController::class, 'redirect'])->name('github.redirect');
+Route::get('/auth/github/callback', [\App\Http\Controllers\Auth\GithubAuthController::class, 'callback'])->name('github.callback');
+
+Route::any('/auth/telegram/callback', [\App\Http\Controllers\Auth\TelegramLoginController::class, 'handle'])->name('telegram.callback');
+
+
 Route::get('/lang/{locale}', function ($locale) {
     if (!in_array($locale, ['en', 'uz', 'ru'])) {
         abort(400);

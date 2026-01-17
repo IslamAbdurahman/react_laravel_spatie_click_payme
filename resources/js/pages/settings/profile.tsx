@@ -1,6 +1,6 @@
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Transition } from '@headlessui/react';
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -24,7 +24,8 @@ type ProfileForm = {
     name: string;
     phone: string;
     email: string;
-}
+    username: string;
+};
 
 export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: boolean; status?: string }) {
     const { auth } = usePage<SharedData>().props;
@@ -33,9 +34,10 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
         name: auth.user.name,
         phone: auth.user.phone,
         email: auth.user.email,
+        username: auth.user.username,
     });
 
-    const { t } = useTranslation();  // Using the translation hook
+    const { t } = useTranslation(); // Using the translation hook
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -77,53 +79,26 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                 className="mt-1 block w-full"
                                 value={data.phone}
                                 onChange={(e) => setData('phone', e.target.value)}
-                                required
                                 autoComplete="phone"
                                 placeholder={t('profile_settings.phone')}
                             />
 
                             <InputError className="mt-2" message={errors.phone} />
                         </div>
-
                         <div className="grid gap-2">
-                            <Label htmlFor="email">{t('profile_settings.email')}</Label>
+                            <Label htmlFor="username">{t('username')}</Label>
 
                             <Input
-                                id="email"
-                                type="email"
+                                id="username"
                                 className="mt-1 block w-full"
-                                value={data.email}
-                                onChange={(e) => setData('email', e.target.value)}
-
-                                autoComplete="username"
-                                placeholder={t('profile_settings.email_address')}
+                                value={data.username}
+                                onChange={(e) => setData('username', e.target.value)}
+                                autoComplete="phone"
+                                placeholder={t('username')}
                             />
 
-                            <InputError className="mt-2" message={errors.email} />
+                            <InputError className="mt-2" message={errors.username} />
                         </div>
-
-                        {mustVerifyEmail && auth.user.email_verified_at === null && (
-                            <div>
-                                <p className="text-muted-foreground -mt-4 text-sm">
-                                    {t('profile_settings.unverified_email')}{' '}
-                                    <Link
-                                        href={route('verification.send')}
-                                        method="post"
-                                        as="button"
-                                        className="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
-                                    >
-                                        {t('profile_settings.resend_verification_email')}
-                                    </Link>
-                                </p>
-
-                                {status === 'verification-link-sent' && (
-                                    <div className="mt-2 text-sm font-medium text-green-600">
-                                        {t('profile_settings.verification_link_sent')}
-                                    </div>
-                                )}
-                            </div>
-                        )}
-
                         <div className="flex items-center gap-4">
                             <Button disabled={processing}>{t('profile_settings.save')}</Button>
 
