@@ -72,6 +72,7 @@ export interface UserPaginate {
 export interface User {
     id: number;
     name: string;
+    username: string;
     email: string;
     phone: string;
     address: string;
@@ -80,6 +81,9 @@ export interface User {
     balance: number;
     avatar: string;
     email_verified_at: string | null;
+    google_id: string | null;
+    github_id: string | null;
+    telegram_id: string | null;
     roles?: Role[];
 
     [key: string]: unknown;
