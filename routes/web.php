@@ -10,14 +10,10 @@ Route::post('/webapp-login', [\App\Http\Controllers\Auth\TelegramAuthController:
 Route::any('/bot/TelegramBot/webhook', [\App\Http\Controllers\Telegram\TelegramBotController::class, 'handle']);
 
 Route::get('/', function () {
-    return redirect()->route('login');
-//    return Inertia::render('welcome');
+    return Inertia::render('welcome');
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-//    Route::get('dashboard', function () {
-//        return Inertia::render('dashboard');
-//    })->name('dashboard');
 
     Route::get('dashboard', [\App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 
