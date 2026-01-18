@@ -92,7 +92,7 @@ class TelegramBotService
             ->row([
                 Keyboard::inlineButton([
                     'text' => 'Open Demo 🎓',
-                    'web_app' => ['url' => 'https://demo.uz'],
+                    'web_app' => ['url' => 'https://react-laravel.faith.uz'],
                 ]),
             ]);
 
@@ -130,7 +130,7 @@ class TelegramBotService
     {
         $this->sendSafeMessage(
             $chatId,
-            "Your referral link: https://t.me/TelegramBot?start={$chatId}"
+            "Your referral link: https://t.me/react_laravel_bot?start={$chatId}"
         );
     }
 
@@ -164,7 +164,7 @@ class TelegramBotService
                     'type' => 'web_app',
                     'text' => 'Open Demo 🎓',
                     'web_app' => [
-                        'url' => 'https://demo.uz',
+                        'url' => 'https://react-laravel.faith.uz',
                     ],
                 ],
             ]);
