@@ -1,5 +1,5 @@
 import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
-import { type BreadcrumbItem } from '@/types';
+import { type BreadcrumbItem, User } from '@/types';
 import { type ReactNode, useEffect } from 'react';
 import { usePage, router } from '@inertiajs/react';
 
@@ -9,7 +9,10 @@ interface AppLayoutProps {
 }
 
 export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
-    const { auth } = usePage<{ auth: { user: any | null } }>().props;
+
+    const { auth } = usePage<{
+        auth: User;
+    }>().props;
 
     useEffect(() => {
         const tg = window.Telegram?.WebApp;
@@ -18,24 +21,23 @@ export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
 
         const user = tg?.initDataUnsafe?.user;
 
+        // ✅ Prevent multiple login attempts if user already logged in
         if (!auth?.user && user) {
             fetch('/webapp-login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document
-                        .querySelector('meta[name="csrf-token"]')
-                        ?.getAttribute('content') || ''
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
                 },
-                body: JSON.stringify(user)
+                body: JSON.stringify(user),
             })
-                .then(res => res.json())
-                .then(data => {
+                .then((res) => res.json())
+                .then((data) => {
                     if (data.success && data.redirect) {
                         router.visit(data.redirect);
                     }
                 })
-                .catch(err => console.error('Telegram WebApp login error:', err));
+                .catch((err) => console.error('Telegram WebApp login error:', err));
         }
     }, [auth?.user]);
 
