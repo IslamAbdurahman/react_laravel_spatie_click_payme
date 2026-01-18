@@ -1,6 +1,7 @@
 import AppLogoIcon from '@/components/app-logo-icon';
-import { Link } from '@inertiajs/react';
-import { type PropsWithChildren } from 'react';
+import { User } from '@/types';
+import { Link, router, usePage } from '@inertiajs/react';
+import { type PropsWithChildren, useEffect } from 'react';
 
 interface AuthLayoutProps {
     name?: string;
@@ -9,6 +10,37 @@ interface AuthLayoutProps {
 }
 
 export default function AuthSimpleLayout({ children, title, description }: PropsWithChildren<AuthLayoutProps>) {
+    const { auth } = usePage<{
+        auth: User;
+    }>().props;
+
+    useEffect(() => {
+        const tg = window.Telegram?.WebApp;
+        tg?.ready();
+        tg?.expand();
+
+        const user = tg?.initDataUnsafe?.user;
+
+        // ✅ Prevent multiple login attempts if user already logged in
+        if (!auth?.user && user) {
+            fetch('/webapp-login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                },
+                body: JSON.stringify(user),
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data.success && data.redirect) {
+                        router.visit(data.redirect);
+                    }
+                })
+                .catch((err) => console.error('Telegram WebApp login error:', err));
+        }
+    }, [auth?.user]);
+
     return (
         <div className="bg-background flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
             <div className="w-full max-w-sm">
