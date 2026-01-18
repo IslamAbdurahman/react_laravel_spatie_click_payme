@@ -39,7 +39,7 @@ class GoogleAuthController extends Controller
 
             // Assign default role only if the user was just created
             if ($user->wasRecentlyCreated) {
-                $user->assignRole('Student');
+                $user->assignRole('Client');
             }
 
             // Log the user in

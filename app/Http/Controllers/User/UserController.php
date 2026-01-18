@@ -98,7 +98,7 @@ class UserController extends Controller
 
             $user = User::create($validated);
 
-            $user->assignRole('Student');
+            $user->assignRole('Client');
 
             return back()->with('success', 'User updated successfully.');
         } catch (\Exception $e) {

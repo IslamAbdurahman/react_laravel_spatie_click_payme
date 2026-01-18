@@ -80,7 +80,7 @@ class TelegramBotService
 
         // Assign default role only if the user was just created
         if ($user->wasRecentlyCreated) {
-            $user->assignRole('Student');
+            $user->assignRole('Client');
         }
 
         // 1. Set persistent “Open Demo” button at the bottom (outside bot chat)

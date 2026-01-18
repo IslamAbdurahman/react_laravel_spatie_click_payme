@@ -37,7 +37,7 @@ class TelegramAuthController extends Controller
 
         // Assign default role only if the user was just created
         if ($user->wasRecentlyCreated) {
-            $user->assignRole('Student');
+            $user->assignRole('Client');
         }
 
         // 5️⃣ Log in user
@@ -45,7 +45,7 @@ class TelegramAuthController extends Controller
 
         return response()->json([
             'success' => true,
-            'redirect' => route('all-test.index'),
+            'redirect' => route('dashboard'),
         ]);
     }
 }
