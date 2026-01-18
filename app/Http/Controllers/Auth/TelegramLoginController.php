@@ -21,7 +21,7 @@ class TelegramLoginController extends Controller
         }
 
         // Create or update user
-        $user = User::updateOrCreate(
+        $user = User::query()->updateOrCreate(
             ['telegram_id' => $data['id']],
             [
                 'name' => $data['first_name'] . ' ' . ($data['last_name'] ?? ''),
@@ -42,7 +42,7 @@ class TelegramLoginController extends Controller
 
     private function isTelegramDataValid(array $data): bool
     {
-        $botToken = env('MynineUzBot_TOKEN');
+        $botToken = env('TELEGRAM_BOT_TOKEN');
         if (!isset($data['hash'])) {
             return false;
         }
