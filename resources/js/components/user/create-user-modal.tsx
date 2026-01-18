@@ -53,53 +53,82 @@ export default function CreateUserModal() {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <button className={`${baseButton} bg-blue-600 hover:bg-blue-700 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700`}>
-                    <IoCreate className="h-4 w-4" />
+                <button
+                    className={`${baseButton} bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-400`}
+                >
+                    <IoCreate className="mr-1 h-4 w-4" />
                     {t('create')}
                 </button>
             </DialogTrigger>
 
-            <DialogContent className="dark:border-gray-400">
-                <DialogTitle>{t('modal.create_title')}</DialogTitle>
-                <DialogDescription>{t('modal.create_description')}</DialogDescription>
+            <DialogContent className="rounded-lg border bg-white p-6 shadow-lg dark:border-gray-700 dark:bg-gray-900 dark:shadow-none">
+                <DialogTitle className="text-gray-900 dark:text-gray-100">{t('modal.create_title')}</DialogTitle>
+                <DialogDescription className="mb-4 text-gray-600 dark:text-gray-300">{t('modal.create_description')}</DialogDescription>
 
                 <form onSubmit={submit} className="space-y-4">
                     {/* Name */}
                     <div>
-                        <Label htmlFor="name">{t('name')}</Label>
-                        <Input id="name" ref={nameInput} value={data.name} onChange={(e) => setData('name', e.target.value)} />
+                        <Label htmlFor="name" className="text-gray-700 dark:text-gray-200">
+                            {t('name')}
+                        </Label>
+                        <Input
+                            id="name"
+                            ref={nameInput}
+                            value={data.name}
+                            onChange={(e) => setData('name', e.target.value)}
+                            className="border-gray-300 bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:ring-blue-400"
+                        />
                         <InputError message={errors.name} />
                     </div>
 
                     {/* Phone */}
                     <div>
-                        <Label htmlFor="phone">{t('phone')}</Label>
-                        <Input id="phone" type="number" value={data.phone} onChange={(e) => setData('phone', e.target.value)} />
+                        <Label htmlFor="phone" className="text-gray-700 dark:text-gray-200">
+                            {t('phone')}
+                        </Label>
+                        <Input
+                            id="phone"
+                            type="number"
+                            value={data.phone}
+                            onChange={(e) => setData('phone', e.target.value)}
+                            className="border-gray-300 bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:ring-blue-400"
+                        />
                         <InputError message={errors.phone} />
                     </div>
 
                     {/* Email */}
                     <div>
-                        <Label htmlFor="email">{t('email')}</Label>
-                        <Input id="email" value={data.email} onChange={(e) => setData('email', e.target.value)} />
+                        <Label htmlFor="email" className="text-gray-700 dark:text-gray-200">
+                            {t('email')}
+                        </Label>
+                        <Input
+                            id="email"
+                            type="email"
+                            value={data.email}
+                            onChange={(e) => setData('email', e.target.value)}
+                            className="border-gray-300 bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:ring-blue-400"
+                        />
                         <InputError message={errors.email} />
                     </div>
 
                     {/* Password */}
                     <div>
-                        <Label htmlFor="password">{t('password')}</Label>
+                        <Label htmlFor="password" className="text-gray-700 dark:text-gray-200">
+                            {t('password')}
+                        </Label>
                         <Input
                             id="password"
                             type="number"
                             inputMode="numeric"
                             value={data.password}
                             onChange={(e) => setData('password', e.target.value)}
+                            className="border-gray-300 bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:ring-blue-400"
                         />
                         <InputError message={errors.password} />
                     </div>
 
                     {/* Footer */}
-                    <DialogFooter className="gap-2">
+                    <DialogFooter className="flex justify-end gap-2">
                         <DialogClose asChild>
                             <Button
                                 variant="secondary"

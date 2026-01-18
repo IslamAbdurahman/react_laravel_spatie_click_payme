@@ -60,40 +60,60 @@ export default function UpdateUserModal({ roles = [], user }: UpdateUserModalPro
 
     return (
         <>
+            {/* Trigger Button */}
             <button
                 onClick={() => setOpen(true)}
-                className="bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:ring-2 focus:ring-green-400 focus:outline-none dark:focus:ring-green-500"
+                className="flex items-center gap-1 rounded-md bg-green-600 px-3 py-2 text-sm font-medium text-white
+                 hover:bg-green-700 focus:ring-2 focus:ring-green-400 focus:outline-none dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-500"
             >
                 <PencilIcon className="h-4 w-4" />
             </button>
 
+            {/* Modal */}
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent className="dark:border-gray-400">
-                    <DialogTitle>{t('modal.update_title')}</DialogTitle>
-                    <DialogDescription>{t('modal.update_description')}</DialogDescription>
+                <DialogContent className="max-w-md rounded-lg border bg-white p-6 shadow-lg dark:border-gray-700 dark:bg-gray-900 dark:shadow-none">
+                    <DialogTitle className="text-gray-900 dark:text-gray-100">{t('modal.update_title')}</DialogTitle>
+                    <DialogDescription className="mb-4 text-gray-600 dark:text-gray-300">{t('modal.update_description')}</DialogDescription>
 
                     <form onSubmit={submit} className="space-y-4">
+                        {/* Name */}
                         <div>
-                            <Label htmlFor="name">{t('name')}</Label>
-                            <Input id="name" ref={nameInput} value={data.name} onChange={(e) => setData('name', e.target.value)} />
+                            <Label htmlFor="name" className="text-gray-700 dark:text-gray-200">
+                                {t('name')}
+                            </Label>
+                            <Input
+                                id="name"
+                                ref={nameInput}
+                                value={data.name}
+                                onChange={(e) => setData('name', e.target.value)}
+                                className="border-gray-300 bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:ring-blue-400"
+                            />
                             <InputError message={errors.name} />
                         </div>
 
+                        {/* Phone */}
                         <div>
-                            <Label htmlFor="phone">{t('phone')}</Label>
-                            <Input id="phone" type="number" value={data.phone} onChange={(e) => setData('phone', e.target.value)} />
+                            <Label htmlFor="phone" className="text-gray-700 dark:text-gray-200">
+                                {t('phone')}
+                            </Label>
+                            <Input
+                                id="phone"
+                                type="number"
+                                value={data.phone}
+                                onChange={(e) => setData('phone', e.target.value)}
+                                className="border-gray-300 bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:ring-blue-400"
+                            />
                             <InputError message={errors.phone} />
                         </div>
 
+                        {/* Role (Admin only) */}
                         {isAdmin && (
                             <div>
-                                <Label>{t('role')}</Label>
-
+                                <Label className="text-gray-700 dark:text-gray-200">{t('role')}</Label>
                                 <Select value={data.role} onValueChange={(value) => setData('role', value)}>
-                                    <SelectTrigger className="w-full">
+                                    <SelectTrigger className="w-full border-gray-300 bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:ring-blue-400">
                                         <span>{data.role ? roles.find((r) => r.name === data.role)?.name : t('select_test')}</span>
                                     </SelectTrigger>
-
                                     <SelectContent>
                                         {roles.map((role) => (
                                             <SelectItem key={role.id} value={role.name}>
@@ -102,30 +122,42 @@ export default function UpdateUserModal({ roles = [], user }: UpdateUserModalPro
                                         ))}
                                     </SelectContent>
                                 </Select>
-
                                 <InputError message={errors.role} />
                             </div>
                         )}
 
+                        {/* Email */}
                         <div>
-                            <Label htmlFor="email">{t('email')}</Label>
-                            <Input id="email" value={data.email} onChange={(e) => setData('email', e.target.value)} />
+                            <Label htmlFor="email" className="text-gray-700 dark:text-gray-200">
+                                {t('email')}
+                            </Label>
+                            <Input
+                                id="email"
+                                value={data.email}
+                                onChange={(e) => setData('email', e.target.value)}
+                                className="border-gray-300 bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:ring-blue-400"
+                            />
                             <InputError message={errors.email} />
                         </div>
 
+                        {/* Password */}
                         <div>
-                            <Label htmlFor="password">{t('password')}</Label>
+                            <Label htmlFor="password" className="text-gray-700 dark:text-gray-200">
+                                {t('password')}
+                            </Label>
                             <Input
                                 id="password"
                                 type="number"
                                 inputMode="numeric"
                                 value={data.password}
                                 onChange={(e) => setData('password', e.target.value)}
+                                className="border-gray-300 bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:ring-blue-400"
                             />
                             <InputError message={errors.password} />
                         </div>
 
-                        <DialogFooter className="gap-2">
+                        {/* Footer */}
+                        <DialogFooter className="flex justify-end gap-2">
                             <DialogClose asChild>
                                 <Button
                                     variant="secondary"
@@ -133,12 +165,17 @@ export default function UpdateUserModal({ roles = [], user }: UpdateUserModalPro
                                         reset();
                                         clearErrors();
                                     }}
+                                    className="bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700"
                                 >
                                     {t('cancel')}
                                 </Button>
                             </DialogClose>
 
-                            <Button type="submit" disabled={processing}>
+                            <Button
+                                type="submit"
+                                disabled={processing}
+                                className="bg-green-600 text-white hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600"
+                            >
                                 {t('save')}
                             </Button>
                         </DialogFooter>
