@@ -15,38 +15,9 @@ interface LoginProps {
 }
 
 export default function Login({ status, canResetPassword }: LoginProps) {
-    const {  auth } = usePage<{
-        auth: User
-    }>().props;
+
 
     const { t } = useTranslation();
-
-    useEffect(() => {
-        const tg = window.Telegram?.WebApp;
-        tg?.ready();
-        tg?.expand();
-
-        const user = tg?.initDataUnsafe?.user;
-
-        // ✅ Prevent multiple login attempts if user already logged in
-        if (!auth?.user && user) {
-            fetch('/webapp-login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-                },
-                body: JSON.stringify(user)
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success && data.redirect) {
-                        router.visit(data.redirect);
-                    }
-                })
-                .catch(err => console.error('Telegram WebApp login error:', err));
-        }
-    }, [auth?.user]);
 
     return (
         <AuthLayout title={t('login.title')} description={t('login.description')}>
