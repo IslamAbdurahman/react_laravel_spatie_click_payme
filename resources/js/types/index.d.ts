@@ -84,6 +84,8 @@ export interface User {
     google_id: string | null;
     github_id: string | null;
     telegram_id: string | null;
+    created_at: string;
+    updated_at: string;
     roles?: Role[];
 
     [key: string]: unknown;

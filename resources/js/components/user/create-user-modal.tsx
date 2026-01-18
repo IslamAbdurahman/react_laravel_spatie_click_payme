@@ -1,5 +1,5 @@
-import { useForm, usePage } from '@inertiajs/react';
-import React, { FormEventHandler, useRef, useEffect } from 'react';
+import { useForm } from '@inertiajs/react';
+import React, { FormEventHandler, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import InputError from '@/components/input-error';
@@ -14,57 +14,35 @@ import {
     DialogContent,
     DialogDescription,
     DialogFooter,
-    DialogTitle
+    DialogTitle,
+    DialogTrigger
 } from '@/components/ui/dialog';
-import { Auth, Role, User } from '@/types';
-import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
+import { IoCreate } from 'react-icons/io5';
+import { baseButton } from '@/components/ui/baseButton';
 
-interface UpdateUserModalProps {
-    roles: Role[];
-    user: User;
-    open: boolean;
-    setOpen: (open: boolean) => void;
-}
-
-export default function UpdateUserModal({ roles, user, open, setOpen }: UpdateUserModalProps) {
+export default function CreateUserModal() {
     const { t } = useTranslation();
+    const [open, setOpen] = useState(false);
+
     const nameInput = useRef<HTMLInputElement>(null);
 
-    const { data, setData, put, processing, reset, errors, clearErrors } = useForm({
-        name: user.name,
-        phone: user.phone,
-        role: (user.roles ?? [])[0]?.name || '',
-        email: user.email,
-        password: user.password
+    const { data, setData, post, processing, reset, errors, clearErrors } = useForm({
+        name: '',
+        phone: '',
+        email: '',
+        password: ''
     });
-
-    const { auth } = usePage().props as unknown as { auth?: Auth };
-
-    const isAdmin = auth?.user?.roles?.some(role => role.name === 'Admin');
-
-
-    console.log(user.roles);
-
-    useEffect(() => {
-        setData({
-            name: user.name,
-            phone: user.phone,
-            role: (user.roles ?? [])[0]?.name || '',
-            email: user.email,
-            password: ''
-        });
-    }, [user, setData]);
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        put(`/user/${user.id}`, {
+        post(route('user.store'), {
             preserveScroll: true,
             onSuccess: () => {
                 reset();
                 clearErrors();
                 setOpen(false); // 🔒 CLOSE MODAL HERE
-                toast.success(t('updated_successfully'));
+                toast.success(t('created_successfully'));
             },
             onError: (err) => {
                 nameInput.current?.focus();
@@ -73,17 +51,23 @@ export default function UpdateUserModal({ roles, user, open, setOpen }: UpdateUs
                 toast.error(errorMessage); // Display error message
             }
         });
-
     };
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+                <button
+                    className={`${baseButton} bg-blue-600 hover:bg-blue-700 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700`}
+                >
+                    <IoCreate className="w-4 h-4" />
+                    {t('create')}
+                </button>
+            </DialogTrigger>
 
-            <DialogContent className="dark:border-gray-400">
-                <DialogDescription>
-                    <DialogTitle>{t('modal.update_title')}</DialogTitle>
-                    <DialogDescription>{t('modal.update_description')}</DialogDescription>
-                </DialogDescription>
+            <DialogContent className={'dark:border-gray-400'}>
+                <DialogTitle>{t('modal.create_title')}</DialogTitle>
+                <DialogDescription>{t('modal.create_description')}</DialogDescription>
+
 
                 <form onSubmit={submit} className="space-y-4">
                     <div>
@@ -107,37 +91,6 @@ export default function UpdateUserModal({ roles, user, open, setOpen }: UpdateUs
                         />
                         <InputError message={errors.phone} />
                     </div>
-
-
-                    {isAdmin && (
-
-                        <div>
-                            <Label htmlFor="test_id">{t('role')}</Label>
-                            <Select
-                                value={String(data.role || '')}
-                                onValueChange={(value) => setData('role', value)}
-                            >
-                                <SelectTrigger className="w-full">
-                                   <span>
-                                        {data.role
-                                            ? roles.find((t) => t.name === data.role)?.name
-                                            : t('select_test')}
-                                    </span>
-                                </SelectTrigger>
-
-                                <SelectContent>
-                                    {roles.map((role) => (
-                                        <SelectItem key={role.id} value={String(role.name)}>
-                                            {role.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-
-                            <InputError message={errors.role} />
-                        </div>
-
-                    )}
 
 
                     <div>
@@ -186,8 +139,8 @@ export default function UpdateUserModal({ roles, user, open, setOpen }: UpdateUs
                     </DialogFooter>
 
                 </form>
+
             </DialogContent>
         </Dialog>
-
     );
 }

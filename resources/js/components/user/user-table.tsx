@@ -1,29 +1,50 @@
-import React, {} from 'react';
+import React, { useState } from 'react';
+import { PencilIcon, TrashIcon } from 'lucide-react';
 import UpdateUserModal from '@/components/user/update-user-modal';
 import DeleteItemModal from '@/components/delete-item-modal';
-import { Link, useForm } from '@inertiajs/react';
+import { Link, useForm, usePage } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
-import { type UserPaginate, SearchData } from '@/types';
+import { User, type UserPaginate, SearchData, Role, Auth } from '@/types';
 import { toast } from 'sonner';
+import CreateUserModal from '@/components/user/create-user-modal';
 
 interface UserTableProps extends UserPaginate {
+    roles: Role[];
     searchData: SearchData;
 }
 
-const UserTable = ({ searchData, ...user }: UserTableProps) => {
+const UserTable = ({ roles, searchData, ...user }: UserTableProps) => {
 
     const { t } = useTranslation();  // Using the translation hook
+    const [open, setOpen] = useState(false);
+    const [openDelete, setOpenDelete] = useState(false);
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
+
+    const { auth } = usePage().props as unknown as { auth?: Auth };
+
+    const isAdmin = auth?.user?.roles?.some(role => role.name === 'Admin');
+
+    const handleUpdateClick = (userData: User) => {
+        setSelectedUser(userData); // Set the selected user data
+        setOpen(true); // Open the modal
+    };
+
+    const handleDeleteClick = (userData: User) => {
+        setSelectedUser(userData); // Set the selected user for deletion
+        setOpenDelete(true); // Open the delete modal
+    };
 
     const { delete: deleteUser, reset, errors: deleteError, clearErrors } = useForm();
 
     const handleDelete = (id: number) => {
-        console.log(deleteError);  // Log to see if errors are populated
 
         deleteUser(`/user/${id}`, {
             preserveScroll: true,
             onSuccess: () => {
                 reset();
                 clearErrors();
+                setOpen(false); // 🔒 CLOSE MODAL HERE
                 toast.success(t('deleted_successfully')); // Success message
             },
             onError: (err) => {
@@ -43,11 +64,13 @@ const UserTable = ({ searchData, ...user }: UserTableProps) => {
                     <tr>
                         <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">{t('n')}</td>
                         <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">{t('name')}</td>
-                        <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">{t('role')}</td>
+                        <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">{t('username')}</td>
+                        <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">{t('telegram_id')}</td>
                         <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">{t('phone')}</td>
                         <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">{t('email')}</td>
+                        <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">{t('created_at')}</td>
                         <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">
-
+                            {/*<CreateUserModal />*/}
                         </th>
                     </tr>
                     </thead>
@@ -60,29 +83,39 @@ const UserTable = ({ searchData, ...user }: UserTableProps) => {
                                 <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
                                     <Link href={`/user/${item.id}`}>
                                         {item.name}
-                                    </Link>
-                                </td>
-                                <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
-                                    {item.roles?.map((role) => {
+                                        ( {item.roles?.map((role) => {
                                         return (
                                             <span key={role.id}>{role.name}</span>
                                         );
-                                    })}
+                                    })} )
+                                    </Link>
                                 </td>
+                                <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">{item.username}</td>
+                                <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">{item.telegram_id}</td>
                                 <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">{item.phone}</td>
                                 <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">{item.email}</td>
                                 <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
+                                    {new Date(item.created_at).toLocaleString('sv-SE').replace('T', ' ')}
+                                </td>
+                                <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
 
-                                    <div className="inline-flex shadow-sm">
+                                    <div className="inline-flex shadow-sm rounded-md overflow-hidden">
+                                        <button
+                                            onClick={() => handleUpdateClick(item)}
+                                            className="bg-green-600 text-white px-4 py-2 text-sm font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 dark:focus:ring-green-500"
+                                        >
+                                            <PencilIcon className="w-4 h-4" />
+                                        </button>
 
-                                        <UpdateUserModal
-                                            user={item}
-                                        />
+                                        {isAdmin && (
+                                            <button
+                                                onClick={() => handleDeleteClick(item)}
+                                                className="bg-red-500 text-white px-4 py-2 text-sm font-medium hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 dark:focus:ring-red-500"
+                                            >
+                                                <TrashIcon className="w-4 h-4" />
+                                            </button>
+                                        )}
 
-                                        <DeleteItemModal
-                                            item={item}
-                                            onDelete={handleDelete} // Handle deletion
-                                        />
                                     </div>
 
 
@@ -91,6 +124,24 @@ const UserTable = ({ searchData, ...user }: UserTableProps) => {
                         );
                     })}
                     </tbody>
+
+                    {/* Place the UpdateUserModal here */}
+                    {selectedUser && open && (
+                        <UpdateUserModal
+                            roles={roles}
+                            user={selectedUser}
+                            open={open}
+                            setOpen={setOpen}
+                        />
+                    )}
+
+                    {/* Pass selected user to the DeleteUserModal */}
+                    {selectedUser && openDelete && (
+                        <DeleteItemModal
+                            item={selectedUser}
+                            onDelete={handleDelete} // Handle deletion
+                        />
+                    )}
 
                 </table>
 
