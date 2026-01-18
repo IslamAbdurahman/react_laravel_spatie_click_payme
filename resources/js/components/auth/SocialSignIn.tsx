@@ -24,11 +24,11 @@ const SocialSignIn = () => {
         const script = document.createElement('script');
         script.src = 'https://telegram.org/js/telegram-widget.js?15';
         script.async = true;
-        script.setAttribute('data-telegram-login', 'MynineUzBot'); // replace with your bot username
+        script.setAttribute('data-telegram-login', 'react_laravel_bot'); // replace with your bot username
         script.setAttribute('data-size', 'large');
         script.setAttribute('data-userpic', 'false');
         script.setAttribute('data-request-access', 'write');
-        script.setAttribute('data-auth-url', 'https://mynine.uz/auth/telegram/callback'); // your callback route
+        script.setAttribute('data-auth-url', 'https://react-laravel.faith.uz/auth/telegram/callback'); // your callback route
         script.setAttribute('data-radius', '10');
         script.setAttribute('data-lang', 'en');
         script.id = 'telegram-widget';
