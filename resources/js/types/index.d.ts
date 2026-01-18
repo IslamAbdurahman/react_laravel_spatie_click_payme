@@ -1,6 +1,10 @@
 import { LucideIcon } from 'lucide-react';
 import type { Config } from 'ziggy-js';
 
+export interface ServerError {
+    error?: string;
+}
+
 export interface Auth {
     user: User;
     roles: Role[];
@@ -10,7 +14,6 @@ export interface Role {
     id: number;
     name: string;
 }
-
 
 export interface BreadcrumbItem {
     title: string;
@@ -57,9 +60,7 @@ export interface Link {
 }
 
 export interface UserPaginate {
-    data: [
-        User
-    ];
+    data: [User];
     search: string;
     per_page: number;
     from: number;
@@ -98,8 +99,3 @@ export interface Role {
     created_at: string;
     updated_at: string;
 }
-
-
-
-
-

@@ -96,7 +96,7 @@ class UserController extends Controller
                 unset($validated['password']); // Don't update if password is empty
             }
 
-            $user = User::create($validated);
+            $user = User::query()->create($validated);
 
             $user->assignRole('Client');
 
